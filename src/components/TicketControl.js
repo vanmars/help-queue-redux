@@ -26,6 +26,11 @@ class TicketControl extends React.Component {
         editing: false
       });
     } else {
+        const { dispatch } = this.props;
+        const action = {
+          type: 'TOGGLE_FORM'
+        }
+        dispatch(action);
       // this.setState(prevState => ({
       //   formVisibleOnPage: !prevState.formVisibleOnPage,
       // }));
@@ -51,6 +56,10 @@ class TicketControl extends React.Component {
       issue: issue,
     }
     dispatch(action);
+    const action2 = {
+      type: 'TOGGLE_FORM'
+    }
+    dispatch(action2);
     // this.setState({formVisibleOnPage: false});
   }
 
@@ -126,7 +135,7 @@ class TicketControl extends React.Component {
         onClickingDelete = {this.handleDeletingTicket} 
         onClickingEdit = {this.handleEditClick} />
       buttonText = "Return to Ticket List";
-    } else if (this.state.formVisibleOnPage) {
+    } else if (this.props.formVisibleOnPage) {
       currentlyVisibleState = <NewTicketForm onNewTicketCreation={this.handleAddingNewTicketToList}  />;
       buttonText = "Return to Ticket List";
     } else {
