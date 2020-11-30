@@ -1,4 +1,4 @@
-import * as actions from './../../actions/index';
+import * as actions from './../../actions';
 
 describe('help queue actions', () => {
   it('deleteTicket should create DELETE_TICKET action', () => {
