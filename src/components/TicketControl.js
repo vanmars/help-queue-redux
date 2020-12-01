@@ -27,17 +27,21 @@ class TicketControl extends React.Component {
   }
 
   // We won't be using this method for our help queue update - but it's important to see how it works.
-  componentDidUpdate() {
-    console.log("component updated!");
-  }
+  // componentDidUpdate() {
+  //   console.log("component updated!");
+  // }
 
   componentWillUnmount(){
-    console.log("component unmounted!");
     clearInterval(this.waitTimeUpdateTimer);
   }
 
   updateTicketElapsedWaitTime = () => {
-    console.log("tick");
+    const { dispatch } = this.props;
+    Object.values(this.props.masterTicketList).forEach(ticket => {
+      const newFormattedWaitTime = ticket.timeOpen.fromNow(true);
+      const action = a.updateTime(ticket.id, newFormattedWaitTime);
+      dispatch(action);
+    });
   }
 
   handleClick = () => {
