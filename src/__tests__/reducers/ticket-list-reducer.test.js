@@ -19,6 +19,7 @@ describe('ticketListReducer', () => {
     names: 'Ryan & Aimen',
     location: '4b',
     issue: 'Redux action is not working correctly.',
+    timeOpen: 0,
     id: 1
   };
 
@@ -29,7 +30,7 @@ describe('ticketListReducer', () => {
 
   // Test for Adding a Ticket
   test('Should successfully add new ticket data to masterTicketList', () => {
-    const { names, location, issue, id } = ticketData;
+    const { names, location, issue, id, timeOpen } = ticketData;
     action = {
       type: c.ADD_TICKET,
       names: names,
@@ -80,5 +81,5 @@ describe('ticketListReducer', () => {
       }
     });
   });
-  
+
 });
