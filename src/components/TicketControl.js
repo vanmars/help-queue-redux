@@ -14,41 +14,39 @@ class TicketControl extends React.Component {
     super(props);
     console.log(props);
     this.state = {
-      // formVisibleOnPage: false,
       selectedTicket: null,
       editing: false
     };
   }
 
-  componentDidMount() {
-    this.waitTimeUpdateTimer = setInterval(() =>
-      this.updateTicketElapsedWaitTime(),
-    60000
-    );
-  }
+  // componentDidMount() {
+  //   this.waitTimeUpdateTimer = setInterval(() =>
+  //     this.updateTicketElapsedWaitTime(),
+  //   60000
+  //   );
+  // }
 
   // We won't be using this method for our help queue update - but it's important to see how it works.
   // componentDidUpdate() {
   //   console.log("component updated!");
   // }
 
-  componentWillUnmount(){
-    clearInterval(this.waitTimeUpdateTimer);
-  }
+  // componentWillUnmount(){
+  //   clearInterval(this.waitTimeUpdateTimer);
+  // }
 
-  updateTicketElapsedWaitTime = () => {
-    const { dispatch } = this.props;
-    Object.values(this.props.masterTicketList).forEach(ticket => {
-      const newFormattedWaitTime = ticket.timeOpen.fromNow(true);
-      const action = a.updateTime(ticket.id, newFormattedWaitTime);
-      dispatch(action);
-    });
-  }
+  // updateTicketElapsedWaitTime = () => {
+  //   const { dispatch } = this.props;
+  //   Object.values(this.props.masterTicketList).forEach(ticket => {
+  //     const newFormattedWaitTime = ticket.timeOpen.fromNow(true);
+  //     const action = a.updateTime(ticket.id, newFormattedWaitTime);
+  //     dispatch(action);
+  //   });
+  // }
 
   handleClick = () => {
     if (this.state.selectedTicket != null) {
       this.setState({
-        // formVisibleOnPage: false,
         selectedTicket: null,
         editing: false
       });
@@ -56,9 +54,6 @@ class TicketControl extends React.Component {
         const { dispatch } = this.props;
         const action = a.toggleForm();
         dispatch(action);
-      // this.setState(prevState => ({
-      //   formVisibleOnPage: !prevState.formVisibleOnPage,
-      // }));
     }
   }
 
@@ -106,11 +101,16 @@ class TicketControl extends React.Component {
   // }
 
   handleDeletingTicket = (id) => {
-    const { dispatch } = this.props;
-    const action = a.deleteTicket(id);
-    dispatch(action);
+    this.props.firestore.delete({collection: 'tickets', doc: id});
     this.setState({selectedTicket: null});
   }
+
+  // handleDeletingTicket = (id) => {
+  //   const { dispatch } = this.props;
+  //   const action = a.deleteTicket(id);
+  //   dispatch(action);
+  //   this.setState({selectedTicket: null});
+  // }
 
   handleEditClick = () => {
     this.setState({editing: true});
@@ -122,7 +122,7 @@ class TicketControl extends React.Component {
       selectedTicket: null
     });
   }
-  
+
   // handleEditingTicketInList = (ticketToEdit) => {
   //   const editedMasterTicketList = this.state.masterTicketList
   //     .filter(ticket => ticket.id !== this.state.selectedTicket.id)
