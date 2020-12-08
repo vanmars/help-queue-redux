@@ -6,10 +6,9 @@ import EditTicketForm from './EditTicketForm';
 import { connect } from 'react-redux';
 import PropTypes from "prop-types";
 import * as a from './../actions';
-import { withFirestore } from 'react-redux-firebase'
+import { withFirestore, isLoaded } from 'react-redux-firebase'
 
 class TicketControl extends React.Component {
-
   constructor(props) {
     super(props);
     console.log(props);
@@ -18,31 +17,6 @@ class TicketControl extends React.Component {
       editing: false
     };
   }
-
-  // componentDidMount() {
-  //   this.waitTimeUpdateTimer = setInterval(() =>
-  //     this.updateTicketElapsedWaitTime(),
-  //   60000
-  //   );
-  // }
-
-  // We won't be using this method for our help queue update - but it's important to see how it works.
-  // componentDidUpdate() {
-  //   console.log("component updated!");
-  // }
-
-  // componentWillUnmount(){
-  //   clearInterval(this.waitTimeUpdateTimer);
-  // }
-
-  // updateTicketElapsedWaitTime = () => {
-  //   const { dispatch } = this.props;
-  //   Object.values(this.props.masterTicketList).forEach(ticket => {
-  //     const newFormattedWaitTime = ticket.timeOpen.fromNow(true);
-  //     const action = a.updateTime(ticket.id, newFormattedWaitTime);
-  //     dispatch(action);
-  //   });
-  // }
 
   handleClick = () => {
     if (this.state.selectedTicket != null) {
@@ -57,24 +31,11 @@ class TicketControl extends React.Component {
     }
   }
 
-  // handleAddingNewTicketToList = (newTicket) => {
-  //   const newMasterTicketList = this.state.masterTicketList.concat(newTicket);
-  //   this.setState({
-  //     masterTicketList: newMasterTicketList,
-  //     formVisibleOnPage: false
-  //   });
-  // }
-
   handleAddingNewTicketToList = () => {
     const { dispatch } = this.props;
     const action = a.toggleForm();
     dispatch(action);
   }
-
-  // handleChangingSelectedTicket = (id) => {
-  //   const selectedTicket = this.state.masterTicketList.filter(ticket => ticket.id === id)[0];
-  //   this.setState({selectedTicket: selectedTicket});
-  // }
 
   handleChangingSelectedTicket = (id) => {
     this.props.firestore.get({collection: 'tickets', doc: id}).then((ticket) => {
@@ -87,30 +48,11 @@ class TicketControl extends React.Component {
       this.setState({selectedTicket: firestoreTicket });
     });
   }
-  
-  // handleChangingSelectedTicket = (id) => {
-  //   const selectedTicket = this.props.masterTicketList[id];
-  //   this.setState({selectedTicket: selectedTicket});
-  // }
-  // handleDeletingTicket = (id) => {
-  //   const newMasterTicketList = this.state.masterTicketList.filter(ticket => ticket.id !== id);
-  //   this.setState({
-  //     masterTicketList: newMasterTicketList,
-  //     selectedTicket: null
-  //   });
-  // }
 
   handleDeletingTicket = (id) => {
     this.props.firestore.delete({collection: 'tickets', doc: id});
     this.setState({selectedTicket: null});
   }
-
-  // handleDeletingTicket = (id) => {
-  //   const { dispatch } = this.props;
-  //   const action = a.deleteTicket(id);
-  //   dispatch(action);
-  //   this.setState({selectedTicket: null});
-  // }
 
   handleEditClick = () => {
     this.setState({editing: true});
@@ -122,28 +64,6 @@ class TicketControl extends React.Component {
       selectedTicket: null
     });
   }
-
-  // handleEditingTicketInList = (ticketToEdit) => {
-  //   const editedMasterTicketList = this.state.masterTicketList
-  //     .filter(ticket => ticket.id !== this.state.selectedTicket.id)
-  //     .concat(ticketToEdit);
-  //   this.setState({
-  //     masterTicketList: editedMasterTicketList,
-  //     editing: false,
-  //     selectedTicket: null
-  //   });
-  // }
-
-  // handleEditingTicketInList = (ticketToEdit) => {
-  //   const { dispatch } = this.props;
-  //   const { id, names, location, issue } = ticketToEdit;
-  //   const action = a.addTicket(ticketToEdit);
-  //   dispatch(action);
-  //   this.setState({
-  //     editing: false,
-  //     selectedTicket: null
-  //   });
-  // }
 
   render(){
     let currentlyVisibleState = null;
@@ -165,12 +85,30 @@ class TicketControl extends React.Component {
       currentlyVisibleState = <TicketList ticketList={this.props.masterTicketList} onTicketSelection={this.handleChangingSelectedTicket} />;
       buttonText = "Add Ticket";
     }
-    return (
-      <React.Fragment>
-        {currentlyVisibleState}
-        <button onClick={this.handleClick}>{buttonText}</button>
-      </React.Fragment>
-    );
+
+    const auth = this.props.firebase.auth();
+    if (!isLoaded(auth)) {
+      return (
+        <React.Fragment>
+          <h1>Loading...</h1>
+        </React.Fragment>
+      )
+    }
+    if ((isLoaded(auth)) && (auth.currentUser == null)) {
+      return (
+        <React.Fragment>
+          <h1>You must be signed in to access the queue.</h1>
+        </React.Fragment>
+      )
+    } 
+    if ((isLoaded(auth)) && (auth.currentUser != null)) {
+      return (
+        <React.Fragment>
+          {currentlyVisibleState}
+          <button onClick={this.handleClick}>{buttonText}</button>
+        </React.Fragment>
+      );
+    }
   }
 }
 
@@ -188,5 +126,4 @@ const mapStateToProps = state => {
 
 TicketControl = connect(mapStateToProps)(TicketControl);
 
-// export default TicketControl;
 export default withFirestore(TicketControl);
