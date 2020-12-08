@@ -27,7 +27,7 @@ function TicketList(props){
         })}
       </React.Fragment>
     );
-  // If the tickets aren't loaded yet, our fragment will return a "Loading..." message.
+
   } else {
     return (
       <React.Fragment>
@@ -38,8 +38,6 @@ function TicketList(props){
 }
 
 TicketList.propTypes = {
-  // We no longer need ticketList props.
-  // ticketList: PropTypes.object,
   onTicketSelection: PropTypes.func
 };
 

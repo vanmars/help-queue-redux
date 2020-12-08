@@ -19,18 +19,6 @@ function EditTicketForm (props) {
     return firestore.update({collection: 'tickets', doc: ticket.id }, propertiesToUpdate)
   }
   
-  // function handleEditTicketFormSubmission(event) {
-  //   event.preventDefault();
-  //   props.onEditTicket({
-  //     names: event.target.names.value, 
-  //     location: event.target.location.value, 
-  //     issue: event.target.issue.value, 
-  //     id: ticket.id, 
-  //     timeOpen: ticket.timeOpen, 
-  //     formattedWaitTime: ticket.formattedWaitTime 
-  //   });
-  // }
-
   return (
     <React.Fragment>
       <ReusableForm 

@@ -25,9 +25,9 @@ class TicketControl extends React.Component {
         editing: false
       });
     } else {
-        const { dispatch } = this.props;
-        const action = a.toggleForm();
-        dispatch(action);
+      const { dispatch } = this.props;
+      const action = a.toggleForm();
+      dispatch(action);
     }
   }
 
